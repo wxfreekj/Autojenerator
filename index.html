@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Jenerator</title>
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .message-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .message-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-md p-6 sm:p-8 space-y-6">
+
+        <h1 class="text-3xl font-extrabold text-gray-900 text-center">Auto Jenerator</h1>
+
+        <div class="space-y-2">
+            <label for="category-select" class="block text-sm font-medium text-gray-700">Choose a Category:</label>
+            <select id="category-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm transition-colors duration-200">
+                <option value="All Categories">All Categories</option>
+            </select>
+        </div>
+
+        <div class="flex justify-center">
+            <button id="send-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-colors duration-300">
+                Send Message
+            </button>
+        </div>
+
+    </div>
+
+    <script type="module" src="messages.js"></script>
+    <script type="module">
+        import { messages } from './messages.js';
+        
+        const sendBtn = document.getElementById('send-btn');
+        const categorySelect = document.getElementById('category-select');
+        
+        // Hardcoded recipient
+        const recipient = {
+            name: "Jen Luce",
+            number: "9789440641"
+        };
+
+        // Function to populate the dropdown with unique categories
+        function populateCategories() {
+            const categories = [...new Set(messages.map(msg => msg.category))];
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        // Function to select a random message based on the chosen category
+        function selectRandomMessage() {
+            const selectedCategory = categorySelect.value;
+            let filteredMessages = messages;
+        
+            if (selectedCategory !== "All Categories") {
+                filteredMessages = messages.filter(msg => msg.category === selectedCategory);
+            }
+        
+            if (filteredMessages.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filteredMessages.length);
+                return filteredMessages[randomIndex];
+            } else {
+                return null;
+            }
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', () => {
+            const selectedMessage = selectRandomMessage();
+            if (selectedMessage) {
+                const smsUri = `sms:${recipient.number}?body=${encodeURIComponent(selectedMessage.text)}`;
+                window.location.href = smsUri;
+            }
+        });
+        
+        // Initial setup
+        populateCategories();
+
+        // Register the service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(reg => {
+                    console.log('Service Worker Registered');
+                }).catch(err => {
+                    console.error('Service Worker Registration failed:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

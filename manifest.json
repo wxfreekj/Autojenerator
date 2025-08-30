@@ -1,0 +1,21 @@
+{
+"name": "Auto Jenerator",
+"short_name": "Jenerator",
+"description": "A random message generator for Jen.",
+"start_url": "/index.html",
+"display": "standalone",
+"background_color": "#f3f4f6",
+"theme_color": "#ffffff",
+"icons": [
+{
+"src": "https://www.google.com/search?q=https://placehold.co/192x192/000000/FFFFFF/png%3Ftext%3DAJ",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "https://www.google.com/search?q=https://placehold.co/512x512/000000/FFFFFF/png%3Ftext%3DAJ",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+}
