@@ -1,0 +1,2 @@
+# Autojenerator
+Random Generator
